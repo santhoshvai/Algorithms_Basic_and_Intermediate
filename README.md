@@ -1,4 +1,4 @@
 Algorithms : Basic and Intermediate
 ===================================
 
-To Do : Week 1 
+To Do : Week 1 Homework
