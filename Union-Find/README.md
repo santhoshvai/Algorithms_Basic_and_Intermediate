@@ -1,12 +1,12 @@
 Union Find
 ===================================
 ## Quick Find
-![QuickFind](quickfind.JPG)
+![QuickFind](img/quickfind.JPG)
 ## Quick Union
-![QuickUnion](quickunion.JPG)
+![QuickUnion](img/quickunion.JPG)
 ## Weighted Quick Union
-![WeightedQuickUnion](weightedquickunion.JPG)
+![WeightedQuickUnion](img/weightedquickunion.JPG)
 ## Path compression
-![pathcomp1](pathcomp1.JPG) ![pathcomp2](pathcomp2.JPG)
+![pathcomp1](img/pathcomp1.JPG) ![pathcomp2](img/pathcomp2.JPG)
 ## Summary
-![ScreenShot](unionfind.JPG)
+![ScreenShot](img/unionfind.JPG)

@@ -48,7 +48,7 @@ public class WeightedQuickUnion {
 	}
 }
 
-/* Analysing mathematically, 
+/* Analyzing mathematically, 
  * Running Time,
  * 		Find : takes time proportional to depth of p and q
  * 		Union : takes constant take time given the roots
