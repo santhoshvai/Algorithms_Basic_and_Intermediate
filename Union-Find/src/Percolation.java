@@ -19,6 +19,11 @@
  */
 public class Percolation {
     private WeightedQuickUnionUF cell; //contains the id number
+    private WeightedQuickUnionUF cell_backwash; /*to solve backwash problem.
+    (when percolation occurs, all components that contain an open 
+    cell in the bottom row are declared “full”, because they are 
+    connected through the dummy bottom row to an actual full cell in the bottom row)
+    so this cell_backwash has no dummy row bottom row at all*/
     private boolean [] openState; //false-closed, true-open
     private int totalN;
     /**
@@ -30,16 +35,18 @@ public class Percolation {
 	// create N-by-N grid, with all sites blocked
 		this.totalN = N;
 	    this.cell = new WeightedQuickUnionUF(N*N+2); //+2 are for additional top and bottom cells
+	    this.cell_backwash = new WeightedQuickUnionUF(N*N+1);
 	    this.openState = new boolean[N*N];
-	    for (int i = 0; i < (N*N); i++) 
+	    for (int i = 0; i < (N*N); i++) {
 	    	this.openState[i] = false;
+	    }
 	}
 	public void open(int row, int column) { // open site (row i, column j) if it is not already
 		int indexI = row - 1;
 		int indexJ = column - 1;
 		if (isOpen(row, column)) return;
 		int offset = indexI*totalN + indexJ; 
-		int cellOffset = offset + 1; 
+		int cellOffset = offset; //cellOffset is same as offset now, as N*N stores the top row
 		this.openState[offset] = true; //make it open
 		/*
 		 * Below you have to connect it with top/bottom cell
@@ -47,11 +54,13 @@ public class Percolation {
 		 */
 		if (indexI == 0) //if it is top row
 		{
-			cell.union(0,  cellOffset);		
+			cell.union((totalN * totalN),  cellOffset);	
+			cell_backwash.union((totalN * totalN),  cellOffset);	
 		}
 		if (indexI == totalN - 1) //if it is bottom row
 		{
 			cell.union((totalN * totalN) + 1, cellOffset);
+			//cell_backwash.union((totalN * totalN)+1,  cellOffset); //since there is no dummy bottom row			
 		}
 		/*
 		 * Below you have to connect it with left/right/up/down cell
@@ -65,8 +74,9 @@ public class Percolation {
 		
 		  if (isOpen(leftIndexI + 1, leftIndexJ + 1)) //check if it is open
 		  {
-			int cellOffsetLeft = (leftIndexI * totalN + leftIndexJ) + 1;
+			int cellOffsetLeft = (leftIndexI * totalN + leftIndexJ);
 			cell.union(cellOffsetLeft, cellOffset);
+			cell_backwash.union(cellOffsetLeft, cellOffset);
 		  }
 		}
 		int rightIndexI = indexI; //same row
@@ -75,8 +85,9 @@ public class Percolation {
 		{
 		  if (isOpen(rightIndexI + 1, rightIndexJ + 1)) //check if it is open
 		  {
-			int cellOffsetRight = (rightIndexI * totalN + rightIndexJ) + 1;
+			int cellOffsetRight = (rightIndexI * totalN + rightIndexJ);
 			cell.union(cellOffsetRight, cellOffset);
+			cell_backwash.union(cellOffsetRight, cellOffset);
 		  }
 		}
 		int upIndexI = indexI - 1; //1 row less
@@ -85,8 +96,9 @@ public class Percolation {
 		{
 		  if (isOpen(upIndexI + 1, upIndexJ + 1)) //check if it is open
 		  {
-			int cellOffsetUp = (upIndexI * totalN + upIndexJ) + 1;
+			int cellOffsetUp = (upIndexI * totalN + upIndexJ);
 			cell.union(cellOffsetUp, cellOffset);
+			cell_backwash.union(cellOffsetUp, cellOffset);
 		  }
 		}
 		int downIndexI = indexI + 1; //1 row greater
@@ -95,8 +107,9 @@ public class Percolation {
 		{
 		  if (isOpen(downIndexI + 1, downIndexJ + 1)) //check if it is open
 		  {
-			int cellOffsetDown = (downIndexI * totalN + downIndexJ) + 1;
-			cell.union(cellOffsetDown, cellOffset);
+			int cellOffsetDown = (downIndexI * totalN + downIndexJ);
+			cell.union(cellOffsetDown, cellOffset);	
+			cell_backwash.union(cellOffsetDown, cellOffset);
 		  }
 		}
 	}
@@ -134,13 +147,14 @@ public class Percolation {
      * if the specified row and column number is out of bounds
      */
 	public boolean isFull(int row, int column) {
+		indexCheck(row, column);
 		int indexI = row - 1;
 		int indexJ = column - 1;
 		int offset = indexI * totalN + indexJ; 
-		int cellIndex = offset + 1;
+		int cellIndex = offset;
 
-		boolean isFull = cell.connected(0, cellIndex);
-		return (isOpen(row, column) && isFull);
+		boolean isfull = cell_backwash.connected((totalN * totalN), cellIndex);
+		return (isOpen(row, column) && isfull);
 	}
 	/**
      * Does the  <tt>system</tt> percolate?
@@ -151,7 +165,7 @@ public class Percolation {
 		//if there is only one site, just return if it is open or not
 		if (totalN == 1) return (openState[0]); 
 		//just check if the top and bottom cell are connected
-		return cell.connected(0,  totalN * totalN + 1); 		
+		return cell.connected((totalN * totalN) ,  totalN * totalN + 1); 		
 	}
 
 }
