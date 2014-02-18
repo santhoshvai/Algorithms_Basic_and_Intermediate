@@ -2,7 +2,7 @@
  * Name: Santhosh Vaiyapuri
  * Email: santhoshvai@gmail.com
  *
- * Compilation:  javac Deque.java
+ * Compilation:  javac RandomisedQueue.java
  * Execution:
  * Dependencies: java.util.Iterator
  *
