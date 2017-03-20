@@ -11,6 +11,8 @@ public class PercolationStats {
 
     private double[] trials;
     private int noOfTrials;
+    private double mean;
+    private double stddev;
 
     // perform trials independent experiments on an n-by-n grid
     public PercolationStats(int n, int trials) {
@@ -21,7 +23,7 @@ public class PercolationStats {
         noOfTrials = trials;
         int gridSize = n * n;
 
-        for (int i = 1; i <= trials; i++) {
+        for (int i = 0; i <= (trials-1); i++) {
             /*
             Initialize all sites to be blocked.
             Repeat the following until the system percolates:
@@ -35,18 +37,20 @@ public class PercolationStats {
                 int col = StdRandom.uniform(1, n + 1);
                 percolation.open(row, col);
             }
-            this.trials[i-1] = ((double) percolation.numberOfOpenSites()) / gridSize;
+            this.trials[i] = ((double) percolation.numberOfOpenSites()) / (double) gridSize;
         }
+        mean = StdStats.mean(this.trials);
+        if (noOfTrials == 1) stddev = Double.NaN;
+        else stddev = StdStats.stddev(this.trials);
 
     }
     // sample mean of percolation threshold
     public double mean() {
-        return StdStats.mean(this.trials);
+        return mean;
     }
     // sample standard deviation of percolation threshold
     public double stddev() {
-        if (noOfTrials == 1) return Double.NaN;
-        return StdStats.stddev(this.trials);
+        return stddev;
     }
     // low  endpoint of 95% confidence interval
     public double confidenceLo() {

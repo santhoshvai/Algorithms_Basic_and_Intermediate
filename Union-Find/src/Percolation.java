@@ -45,8 +45,13 @@ public class Percolation {
     // open site (row, col) if it is not open already
     public void open(int row, int col) {
         if ((row > mN || row == 0) || (col > mN || col == 0)) throw new IndexOutOfBoundsException();
+
         int index = xyTo1D(row, col);
+
+        if (grid[index] == Site.OPEN) return;
+
         grid[index] = Site.OPEN;
+
         // connect to left if open
         if (col > 1) {
             if (grid[index-1] == Site.OPEN) uf.union(index, index-1);
