@@ -1,5 +1,6 @@
+package dataStructures;
 
-public class CompressedPath_Weighted_QuickUnion { 
+public class CompressedPath_Weighted_QuickUnion {
 	/* Just after computing the root of p,
 	 * set the id of each examined node to point that root
 	 * thats gonna be a constant extra cost.

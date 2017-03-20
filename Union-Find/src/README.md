@@ -17,7 +17,7 @@ Write a program to estimate the value of the _percolation threshold_ via Monte C
 
 **The problem.** In a famous scientific problem, researchers are interested in the following question: if sites are independently set to be open with probability _p_ (and therefore blocked with probability 1 − _p_), what is the probability that the system percolates? When _p_ equals 0, the system does not percolate; when _p_ equals 1, the system percolates. The plots below show the site vacancy probability _p_ versus the percolation probability for 20-by-20 random grid (left) and 100-by-100 random grid (right).
 
-![Percolation threshold for 20-by-20 grid][7]                ![Percolation threshold for 100-by-100 grid][8]          
+![Percolation threshold for 20-by-20 grid][7]                ![Percolation threshold for 100-by-100 grid][8]
 
 When _N_ is sufficiently large, there is a _threshold_ value _p_* such that when _p_ < _p_* a random _N_-by-_N_ grid almost never percolates, and when _p_ > _p_*, a random _N_-by-_N_ grid almost always percolates. No mathematical solution for determining the percolation threshold _p_* has yet been derived. Your task is to write a computer program to estimate _p_*.
 
@@ -112,7 +112,7 @@ Also, include a `main()` method that takes two _command-line arguments_ _N_ and 
 >     95% confidence interval = 0.666217665216461, 0.6676773347835391
 >
 
-**Analysis of running time and memory usage (optional and not graded).** Implement the `Percolation` data type using the quick-find algorithm [QuickFindUF.java][15] from `algs4.jar`.
+**Analysis of running time and memory usage (optional and not graded).** Implement the `Percolation` data type using the quick-find algorithm [dataStructures.QuickFindUF.java][15] from `algs4.jar`.
 
 Use the stopwatch data type from our standard library to measure the total running time of PercolationStats. How does doubling N affect the total running time? How does doubling T affect the total running time? Give a formula (using tilde notation) of the total running time on your computer (in seconds) as a single function of both N and T. Using the 64-bit memory-cost model from lecture, give the total memory usage in bytes (using tilde notation) that an N-by-N percolation system uses. Count all memory that is used, including memory for the union-find data structure.
 
@@ -140,5 +140,5 @@ Copyright © 2008.
    [12]: http://coursera.cs.princeton.edu/algs4/checklists/percolation-204.png
    [13]: http://coursera.cs.princeton.edu/algs4/checklists/percolation-stats.png
    [14]: http://coursera.cs.princeton.edu/algs4/checklists/percolation-confidence.png
-   [15]: http://algs4.cs.princeton.edu/15uf/QuickFindUF.java.html
+   [15]: http://algs4.cs.princeton.edu/15uf/dataStructures.QuickFindUF.java.html
    [16]: http://algs4.cs.princeton.edu/15uf/WeightedQuickUnionUF.java.html

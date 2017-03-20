@@ -1,109 +1,74 @@
-/****************************************************************************
- *  Compilation:  
- *  Execution:  java PercolationStats 200 100 (Example)
- *  Dependencies: StdIn.java StdOut.java
- *
- *  Percolation DataStructure
- *
- ****************************************************************************/
+import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.StdStats;
+
+import java.util.Locale;
+
 /**
- *  The <tt>PercolationStats</tt> class represents a PercolationStats (experimentation) data structure.
- *  It supports the <em>mean</em> and <em>standard_deviation</em> operation
- *  <p>
- *  This implementation uses Percolation DataStructure
- *  <p>
- *     
- *  @author Santhosh Vaiyapuri
+ * Created by santhoshvai on 18/03/17.
  */
 public class PercolationStats {
-	private double[] percolationThresholdArray;
-	private double mean;
-	private double stdDev;
-	private int totalT;
 
-	public PercolationStats(int N, int T)    // perform T independent computational experiments on an N-by-N grid
-	{
-		if (N <= 0  || T <= 0)
-			throw new java.lang.IllegalArgumentException();
+    private double[] trials;
+    private int noOfTrials;
 
-		percolationThresholdArray = new double[T];
-		totalT = T;
-		for (int i = 0; i < T; ++i)  // perform T independent computational experiments
-		{
-			int totalOpen = 0; //no of open sites
-			Percolation per = new Percolation(N);
-			boolean Percolated = false;
+    // perform trials independent experiments on an n-by-n grid
+    public PercolationStats(int n, int trials) {
+        if (n <= 0 || trials <= 0) {
+            throw new IllegalArgumentException();
+        }
+        this.trials = new double[trials];
+        noOfTrials = trials;
+        int gridSize = n * n;
 
-			while (!Percolated)
-			{
-				//Use standard random from our standard libraries to generate random numbers
-				int indexI = StdRandom.uniform(N) + 1;
-                int indexJ = StdRandom.uniform(N) + 1;
-				if (!per.isOpen(indexI, indexJ))
-				{
-					per.open(indexI,  indexJ);
-					++totalOpen; //increment the no of open sites by one
-					Percolated = per.percolates();
-				}
-			}
-			//For example, if sites are opened in a 20-by-20 lattice according to the snapshots below, 
-			//then our estimate of the percolation threshold is 204/400 = 0.51 
-			//because the system percolates when the 204th site is opened.
-			percolationThresholdArray[i] = (double) totalOpen / (double) (N * N);
-		}
+        for (int i = 1; i <= trials; i++) {
+            /*
+            Initialize all sites to be blocked.
+            Repeat the following until the system percolates:
+                Choose a site uniformly at random among all blocked sites.
+                Open the site.
+            The fraction of sites that are opened when the system percolates provides an estimate of the percolation threshold.
+             */
+            Percolation percolation = new Percolation(n);
+            while (!percolation.percolates()) {
+                int row = StdRandom.uniform(1, n + 1);
+                int col = StdRandom.uniform(1, n + 1);
+                percolation.open(row, col);
+            }
+            this.trials[i-1] = ((double) percolation.numberOfOpenSites()) / gridSize;
+        }
 
-		//use standard statistics to compute the sample mean and standard deviation
-		mean = StdStats.mean(percolationThresholdArray);
-		stdDev = StdStats.stddev(percolationThresholdArray);
+    }
+    // sample mean of percolation threshold
+    public double mean() {
+        return StdStats.mean(this.trials);
+    }
+    // sample standard deviation of percolation threshold
+    public double stddev() {
+        if (noOfTrials == 1) return Double.NaN;
+        return StdStats.stddev(this.trials);
+    }
+    // low  endpoint of 95% confidence interval
+    public double confidenceLo() {
+        return (mean() - ((1.96 * stddev())/Math.sqrt(noOfTrials)));
+    }
+    // high endpoint of 95% confidence interval
+    public double confidenceHi() {
+        return (mean() + ((1.96 * stddev())/Math.sqrt(noOfTrials)));
+    }
 
-	}
-	/**
-     * 
-     * @return the sample <tt>mean</tt> of percolation threshold
-     */
-	public double mean()          
-	{
-		return mean;
-	}
-	/**
-     * 
-     * @return the sample <tt>standard deviation </tt> of percolation threshold
-     */
-	public double stddev()                 
-	{
-		return stdDev;
-	}
-	/**
-     * 
-     * @return lower bound of the 95% confidence interval
-     */
-	public double confidenceLo()
-	{
-		return (mean - ((1.96 * stdDev) / Math.sqrt(totalT)));
-	}
-	/**
-     * 
-     * @return higher bound of the 95% confidence interval
-     */
-	public double confidenceHi() 
-	{
-		return (mean + ((1.96 * stdDev) / Math.sqrt(totalT)));
-	}
-	public static void main(String[] args)  
-	{
-		if (args.length < 2)
-		{
-			throw new java.lang.IllegalArgumentException();
-		}
-		int N = Integer.parseInt(args[0]); // N-by-N grid
-		int T = Integer.parseInt(args[1]); //perform T independent computational experiments
+    // test client (described below)
+    public static void main(String[] args) {
+        if (args.length < 2)
+        {
+            throw new java.lang.IllegalArgumentException();
+        }
+        int n = Integer.parseInt(args[0]); // N-by-N grid
+        int t = Integer.parseInt(args[1]); // perform T independent computational experiments
 
-		PercolationStats per = new PercolationStats(N, T);
-		double mean = per.mean();
-		double stddev = per.stddev();
-
-        System.out.println("mean                    = " + mean);
-        System.out.println("stddev                  = " + stddev);
-        System.out.println("95% confidence interval = " + per.confidenceLo() + ", " + per.confidenceHi());
+        PercolationStats per = new PercolationStats(n, t);
+        StdOut.printf(Locale.US, "mean                    = %f\n", per.mean());
+        StdOut.printf(Locale.US, "stddev                  = %f\n", per.stddev());
+        StdOut.printf(Locale.US, "95%% confidence interval = [%f, %f]\n", per.confidenceLo(), per.confidenceHi());
     }
 }

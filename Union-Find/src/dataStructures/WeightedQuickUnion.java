@@ -1,5 +1,6 @@
+package dataStructures;
 
-public class WeightedQuickUnion { 
+public class WeightedQuickUnion {
 	/* Make sure that the tree never gets tall
 	 * always make sure that a smaller tree is linked below to a larger tree
 	 * not the other way around
